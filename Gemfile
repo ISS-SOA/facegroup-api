@@ -5,6 +5,8 @@ gem 'sinatra'
 gem 'thin'
 gem 'json'
 
+gem 'econfig'
+
 group :test do
   gem 'minitest'
   gem 'minitest-rg'

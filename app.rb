@@ -1,11 +1,19 @@
 # frozen_string_literal: true
 require 'sinatra'
+require 'econfig'
 
-# GroupieAPI web service
-class GroupieAPI < Sinatra::Base
-  API_VER = '0.1'
+Econfig.root = File.dirname(__FILE__)
 
-  get '/?' do
-    "GroupieAPI latest version endpoints are at: /v#{API_VER}/"
+# Groupie service space
+module Groupie
+  extend Econfig::Shortcut
+
+  # GroupieAPI web service
+  class API < Sinatra::Base
+    API_VER = '0.1'
+
+    get '/?' do
+      "GroupieAPI latest version endpoints are at: /v#{API_VER}/"
+    end
   end
 end

@@ -9,5 +9,5 @@ require_relative '../app'
 include Rack::Test::Methods
 
 def app
-  GroupieAPI
+  Groupie::API
 end
