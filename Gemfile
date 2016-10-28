@@ -11,8 +11,12 @@ gem 'facegroup'
 group :test do
   gem 'minitest'
   gem 'minitest-rg'
-  gem 'rack'
+
   gem 'rack-test'
   gem 'rake'
+
+  gem 'vcr'
+  gem 'webmock'
+
   gem 'pry-byebug'
 end
