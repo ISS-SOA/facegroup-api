@@ -6,6 +6,7 @@ gem 'thin'
 gem 'json'
 
 gem 'econfig'
+gem 'facegroup'
 
 group :test do
   gem 'minitest'
@@ -13,4 +14,5 @@ group :test do
   gem 'rack'
   gem 'rack-test'
   gem 'rake'
+  gem 'pry-byebug'
 end
