@@ -3,44 +3,40 @@ require 'sinatra'
 require 'econfig'
 require 'facegroup'
 
-ENV['RACK_ENV'] ||= 'development'
-Econfig.env = ENV['RACK_ENV']
-Econfig.root = File.dirname(__FILE__)
-
-# Groupie service space
-module Groupie
+# GroupieAPI web service
+class GroupieAPI < Sinatra::Base
   extend Econfig::Shortcut
 
-  # GroupieAPI web service
-  class API < Sinatra::Base
-    API_VER = 'v0.1'
+  Econfig.env = settings.environment.to_s
+  Econfig.root = settings.root
 
-    get '/?' do
-      "GroupieAPI latest version endpoints are at: /#{API_VER}/"
-    end
+  API_VER = 'v0.1'
 
-    get "/#{API_VER}/group/:fb_group_id/?" do
-      group = FaceGroup::Group.find(
-        id: params[:fb_group_id]
-      )
+  get '/?' do
+    "GroupieAPI latest version endpoints are at: /#{API_VER}/"
+  end
 
-      { group_id: group.id, name: group.name }.to_json
-    end
+  get "/#{API_VER}/group/:fb_group_id/?" do
+    group = FaceGroup::Group.find(
+      id: params[:fb_group_id]
+    )
 
-    get "/#{API_VER}/group/:fb_group_id/feed/?" do
-      group = FaceGroup::Group.find(
-        id: params[:fb_group_id]
-      )
+    { group_id: group.id, name: group.name }.to_json
+  end
 
-      {
-        feed: group.feed.postings.map do |post|
-          {
-            posting: {
-              posting_id: post.id
-            }
+  get "/#{API_VER}/group/:fb_group_id/feed/?" do
+    group = FaceGroup::Group.find(
+      id: params[:fb_group_id]
+    )
+
+    {
+      feed: group.feed.postings.map do |post|
+        {
+          posting: {
+            posting_id: post.id
           }
-        end
-      }.to_json
-    end
+        }
+      end
+    }.to_json
   end
 end
