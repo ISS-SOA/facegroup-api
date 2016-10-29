@@ -31,11 +31,17 @@ class GroupieAPI < Sinatra::Base
 
     {
       feed: group.feed.postings.map do |post|
-        {
-          posting: {
-            posting_id: post.id
+        posting = { posting_id: post.id }
+        posting[:message] = post.message if post.message
+        if post.attachment
+          posting[:attachment] = {
+            title: post.attachment.title,
+            url: post.attachment.url,
+            description: post.attachment.description
           }
-        }
+        end
+
+        { posting: posting }
       end
     }.to_json
   end
