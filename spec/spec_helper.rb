@@ -16,5 +16,5 @@ CASSETTES_FOLDER = "#{FIXTURES_FOLDER}/cassettes"
 CASSETTE_FILE = 'groups'
 
 def app
-  GroupieAPI
+  FaceGroupAPI
 end

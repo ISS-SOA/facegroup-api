@@ -1,5 +1,5 @@
 # FaceGroup Web API
-[ ![Codeship Status for ISS-SOA/FaceGroupie-API](https://app.codeship.com/projects/6d9e1b40-7f50-0134-e9e1-6e03b3627684/status?branch=master)](https://app.codeship.com/projects/181891)
+[ ![Codeship Status for ISS-SOA/FaceGroup-API](https://app.codeship.com/projects/6d9e1b40-7f50-0134-e9e1-6e03b3627684/status?branch=master)](https://app.codeship.com/projects/181891)
 
 API to check for feeds and information on public Facebook Groups
 
