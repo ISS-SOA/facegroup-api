@@ -8,7 +8,7 @@ gem 'econfig'
 
 gem 'facegroup'
 
-gem :develop, :test do
+group :develop, :test do
   gem 'pry-byebug'
 end
 
