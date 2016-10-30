@@ -2,48 +2,50 @@
 require_relative 'spec_helper'
 
 describe 'Group Routes' do
-  VCR.configure do |c|
-    c.cassette_library_dir = CASSETTES_FOLDER
-    c.hook_into :webmock
-
-    c.filter_sensitive_data('<ACCESS_TOKEN>') do
-      URI.unescape(app.config.FB_ACCESS_TOKEN)
-    end
-
-    c.filter_sensitive_data('<ACCESS_TOKEN_ESCAPED>') do
-      ENV['FB_ACCESS_TOKEN']
-    end
-
-    c.filter_sensitive_data('<CLIENT_ID>') { ENV['FB_CLIENT_ID'] }
-    c.filter_sensitive_data('<CLIENT_SECRET>') { ENV['FB_CLIENT_SECRET'] }
-  end
+  SAD_FB_GROUP_ID = '12345'
 
   before do
-    VCR.insert_cassette CASSETTE_FILE, record: :new_episodes
+    VCR.insert_cassette GROUPS_CASSETTE, record: :new_episodes
   end
 
   after do
     VCR.eject_cassette
   end
 
-  it 'should successfully find configuration information' do
-    app.config.FB_GROUP_ID.length.must_be :>, 0
+  describe 'Find Group by its Facebook ID' do
+    it 'HAPPY: should find a group given a correct id' do
+      get "api/v0.1/group/#{app.config.FB_GROUP_ID}"
+
+      last_response.status.must_equal 200
+      last_response.content_type.must_equal 'application/json'
+      group_data = JSON.parse(last_response.body)
+      group_data['group_id'].length.must_be :>, 0
+      group_data['name'].length.must_be :>, 0
+    end
+
+    it 'SAD: should report if a group is not found' do
+      get "api/v0.1/group/#{SAD_FB_GROUP_ID}"
+
+      last_response.status.must_equal 404
+      last_response.body.must_include SAD_FB_GROUP_ID
+    end
   end
 
-  it 'should find a group' do
-    get "v0.1/group/#{app.config.FB_GROUP_ID}"
+  describe 'Get the latest feed from a group' do
+    it 'HAPPY should find a group feed' do
+      get "api/v0.1/group/#{app.config.FB_GROUP_ID}/feed"
 
-    last_response.status.must_equal 200
-    group_data = JSON.parse(last_response.body)
-    group_data['group_id'].length.must_be :>, 0
-    group_data['name'].length.must_be :>, 0
-  end
+      last_response.status.must_equal 200
+      last_response.content_type.must_equal 'application/json'
+      feed_data = JSON.parse(last_response.body)
+      feed_data['feed'].count.must_be :>=, 25
+    end
 
-  it 'should find a group feed' do
-    get "v0.1/group/#{app.config.FB_GROUP_ID}/feed"
+    it 'SAD should report if the feed cannot be found' do
+      get "api/v0.1/group/#{SAD_FB_GROUP_ID}/feed"
 
-    last_response.status.must_equal 200
-    feed_data = JSON.parse(last_response.body)
-    feed_data['feed'].count.must_be :>=, 25
+      last_response.status.must_equal 404
+      last_response.body.must_include SAD_FB_GROUP_ID
+    end
   end
 end
