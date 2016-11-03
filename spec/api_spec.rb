@@ -3,7 +3,7 @@ require_relative 'spec_helper'
 
 describe 'API basics' do
   it 'should find configuration information' do
-    app.config.FB_GROUP_ID.length.must_be :>, 0
+    FaceGroupAPI.config.FB_GROUP_ID.length.must_be :>, 0
   end
 
   it 'should successfully find the root route' do

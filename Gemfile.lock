@@ -2,16 +2,29 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.4.0)
+    bond (0.5.1)
     byebug (9.0.6)
     coderay (1.1.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    domain_name (0.5.20160826)
+    domain_name (0.5.20161021)
       unf (>= 0.0.5, < 1.0.0)
     econfig (2.0.0)
-    facegroup (0.2.0)
+    erubis (2.7.0)
+    facegroup (0.3.0)
       http (~> 2.0)
+    ffi (1.9.14)
+    flay (2.8.1)
+      erubis (~> 2.7.0)
+      path_expander (~> 1.0)
+      ruby_parser (~> 3.0)
+      sexp_processor (~> 4.0)
+    flog (4.4.0)
+      path_expander (~> 1.0)
+      ruby_parser (~> 3.1, > 3.1.0)
+      sexp_processor (~> 4.4)
     hashdiff (0.3.0)
+    hirb (0.7.3)
     http (2.0.3)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -22,10 +35,15 @@ GEM
     http-form_data (1.0.1)
     http_parser.rb (0.6.0)
     json (2.0.2)
+    listen (3.1.5)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
+      ruby_dep (~> 1.2)
     method_source (0.8.2)
     minitest (5.9.1)
     minitest-rg (5.2.0)
       minitest (~> 5.0)
+    path_expander (1.0.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -40,13 +58,37 @@ GEM
     rack-test (0.6.3)
       rack (>= 1.0)
     rake (11.3.0)
+    rb-fsevent (0.9.8)
+    rb-inotify (0.9.7)
+      ffi (>= 0.5.0)
+    rerun (0.11.0)
+      listen (~> 3.0)
+    ripl (0.7.1)
+      bond (~> 0.5.1)
+    ripl-multi_line (0.3.1)
+      ripl (>= 0.3.6)
+    ripl-rack (0.2.1)
+      rack (>= 1.0)
+      rack-test (~> 0.6.2)
+      ripl (>= 0.7.0)
+    ruby_dep (1.5.0)
+    ruby_parser (3.8.3)
+      sexp_processor (~> 4.1)
     safe_yaml (1.0.4)
+    sequel (4.40.0)
+    sexp_processor (4.7.0)
     sinatra (1.4.7)
       rack (~> 1.5)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
     slop (3.6.0)
+    sqlite3 (1.3.12)
     tilt (2.0.5)
+    tux (0.3.0)
+      ripl (>= 0.3.5)
+      ripl-multi_line (>= 0.2.4)
+      ripl-rack (>= 0.2.0)
+      sinatra (>= 1.2.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
@@ -62,6 +104,9 @@ PLATFORMS
 DEPENDENCIES
   econfig
   facegroup
+  flay
+  flog
+  hirb
   json
   minitest
   minitest-rg
@@ -69,7 +114,11 @@ DEPENDENCIES
   puma
   rack-test
   rake
+  rerun
+  sequel
   sinatra
+  sqlite3
+  tux
   vcr
   webmock
 
