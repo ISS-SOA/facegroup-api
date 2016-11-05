@@ -1,3 +1,3 @@
 # frozen_string_literal: true
-require './app.rb'
+require './init.rb'
 run FaceGroupAPI

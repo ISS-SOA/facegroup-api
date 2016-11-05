@@ -7,7 +7,7 @@ require 'rack/test'
 require 'vcr'
 require 'webmock'
 
-require_relative '../app'
+require './init.rb'
 
 include Rack::Test::Methods
 
@@ -42,3 +42,14 @@ SAD_GROUP_URL = 'https://www.facebook.com/groups/whatisthisidonteven'
 SAD_GROUP_ID = '00000'
 SAD_POSTING_ID = '13245_12324'
 REMOVED_FB_POSTING_ID = '13245_12324'
+
+include WordMagic
+
+def random_message_word
+  messages = Posting.all.map(&:message).join(' ')
+  words = messages.gsub(/[^a-zA-Z]/, ' ').downcase.split(' ').uniq
+  reasonable_words = reasonable_search_terms(words.join('+'))
+  word = reasonable_words.sample
+  message_count = Posting.all.select { |p| p.message =~ /#{word}/i }.count
+  { word: word, message_count: message_count }
+end

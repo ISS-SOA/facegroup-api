@@ -1,11 +1,10 @@
 ---
 development:
-  client_id: '<secret here>'
-  client_secret: '<secret here>'
-  access_token: '<secret here>'
-  group_id: '<secret here>'
+  FB_CLIENT_ID: '<secret here>'
+  FB_CLIENT_SECRET: '<secret here>'
+  FB_ACCESS_TOKEN: '<secret here>'
+
 test:
-  client_id: '<secret here>'
-  client_secret: '<secret here>'
-  access_token: '<secret here>'
-  group_id: '<secret here>'
+  FB_CLIENT_ID: '<secret here>'
+  FB_CLIENT_SECRET: '<secret here>'
+  FB_ACCESS_TOKEN: '<secret here>'

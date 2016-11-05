@@ -9,12 +9,11 @@ gem 'econfig'
 gem 'facegroup'
 gem 'sequel'
 
-group :develop, :test do
-  gem 'pry-byebug'
+group :development, :test do
   gem 'sqlite3'
 end
 
-group :develop do
+group :development do
   gem 'rerun'
   gem 'tux'
   gem 'hirb'
