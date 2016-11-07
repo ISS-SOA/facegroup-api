@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
+ruby '2.3.1'
 
 gem 'sinatra'
 gem 'puma'
@@ -15,8 +16,6 @@ end
 
 group :development do
   gem 'rerun'
-  gem 'tux'
-  gem 'hirb'
 
   gem 'flog'
   gem 'flay'
@@ -31,6 +30,11 @@ group :test do
 
   gem 'vcr'
   gem 'webmock'
+end
+
+group :development, :production do
+  gem 'tux'
+  gem 'hirb'
 end
 
 group :production do
