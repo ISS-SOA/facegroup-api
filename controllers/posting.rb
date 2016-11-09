@@ -4,7 +4,6 @@
 class FaceGroupAPI < Sinatra::Base
   include WordMagic
 
-  # TODO: allow search terms/tags
   get "/#{API_VER}/group/:id/posting/?" do
     group_id = params[:id]
     search_terms = reasonable_search_terms(params[:search])
@@ -23,24 +22,12 @@ class FaceGroupAPI < Sinatra::Base
           group.postings
         end
 
-      postings = {
-        postings: relevant_postings.map do |post|
-          posting = { posting_id: post.id, group_id: group_id }
-          posting[:message] = post.message if post.message
-          posting[:name] = post.name if post.name
-          if post.attachment_title
-            posting[:attachment] = {
-              title: post.attachment_title,
-              url: post.attachment_url,
-              description: post.attachment_description
-            }
-          end
-          { posting: posting }
-        end
-      }
+      results = PostingsSearchResults.new(
+        search_terms, group_id, relevant_postings
+      )
 
       content_type 'application/json'
-      postings.to_json
+      results.to_h.to_json
     rescue
       content_type 'text/plain'
       halt 500, "FB Group (id: #{group_id}) could not be processed"
@@ -58,18 +45,18 @@ class FaceGroupAPI < Sinatra::Base
       end
 
       posting.update(
-        created_time:   updated_posting.created_time,
-        updated_time:   updated_posting.updated_time,
-        message:        updated_posting.message,
-        name:           updated_posting.name,
+        created_time:             updated_posting.created_time,
+        updated_time:             updated_posting.updated_time,
+        message:                  updated_posting.message,
+        name:                     updated_posting.name,
         attachment_title:         updated_posting.attachment&.title,
         attachment_description:   updated_posting.attachment&.description,
         attachment_url:           updated_posting.attachment&.url
       )
       posting.save
 
-      content_type 'text/plain'
-      body ''
+      content_type 'application/json'
+      PostingRepresenter.new(posting).to_json
     rescue
       content_type 'text/plain'
       halt 500, "Cannot update posting (id: #{posting_id})"

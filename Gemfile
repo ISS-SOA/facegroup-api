@@ -9,6 +9,8 @@ gem 'econfig'
 
 gem 'facegroup'
 gem 'sequel'
+gem 'roar'
+gem 'multi_json'
 
 group :development, :test do
   gem 'sqlite3'

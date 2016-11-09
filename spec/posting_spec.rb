@@ -39,10 +39,12 @@ describe 'Posting Routes' do
     10.times do
       it '(HAPPY) should find valid keyword postings' do
         magic_word = random_message_word
-        group_id = Group.first.id
+        group_id = Group.first.id.to_s
         get "api/v0.1/group/#{group_id}/posting?search=#{magic_word[:word]}"
         last_response.status.must_equal 200
         results = JSON.parse(last_response.body)
+        results['group_id'].must_equal group_id
+        results['search_terms_used'].count.must_equal 1
         results['postings'].count.must_equal magic_word[:message_count]
       end
     end
@@ -53,10 +55,12 @@ describe 'Posting Routes' do
         keywords = magic_words.map { |magic| magic[:word] }.join('+')
         largest_count = magic_words.map { |magic| magic[:message_count] }.max
 
-        group_id = Group.first.id
+        group_id = Group.first.id.to_s
         get "api/v0.1/group/#{group_id}/posting?search=#{keywords}"
         last_response.status.must_equal 200
         results = JSON.parse(last_response.body)
+        results['group_id'].must_equal group_id
+        results['search_terms_used'].count.must_equal magic_words.count
         results['postings'].count.must_be :>=, largest_count
       end
     end
@@ -81,6 +85,7 @@ describe 'Posting Routes' do
       last_response.status.must_equal 200
       updated = Posting.first
       updated.message.must_equal(original.message)
+      last_response.body == PostingRepresenter.new(original).to_json
     end
 
     it '(BAD) should report error if given invalid posting ID' do

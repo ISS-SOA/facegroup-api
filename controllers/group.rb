@@ -10,7 +10,7 @@ class FaceGroupAPI < Sinatra::Base
       group = Group.find(id: group_id)
 
       content_type 'application/json'
-      { id: group.id, name: group.name }.to_json
+      GroupRepresenter.new(group).to_json
     rescue
       content_type 'text/plain'
       halt 404, "FB Group (id: #{group_id}) not found"
@@ -40,12 +40,12 @@ class FaceGroupAPI < Sinatra::Base
 
       fb_group.feed.postings.each do |fb_posting|
         Posting.create(
-          group_id:       group.id,
-          fb_id:          fb_posting.id,
-          created_time:   fb_posting.created_time,
-          updated_time:   fb_posting.updated_time,
-          message:        fb_posting.message,
-          name:           fb_posting.name,
+          group_id:                 group.id,
+          fb_id:                    fb_posting.id,
+          created_time:             fb_posting.created_time,
+          updated_time:             fb_posting.updated_time,
+          message:                  fb_posting.message,
+          name:                     fb_posting.name,
           attachment_title:         fb_posting.attachment&.title,
           attachment_description:   fb_posting.attachment&.description,
           attachment_url:           fb_posting.attachment&.url
@@ -53,7 +53,7 @@ class FaceGroupAPI < Sinatra::Base
       end
 
       content_type 'application/json'
-      { group_id: group.id, name: group.name }.to_json
+      GroupRepresenter.new(group).to_json
     rescue
       content_type 'text/plain'
       halt 500, "Cannot create group (id: #{fb_group_id})"

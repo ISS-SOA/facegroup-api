@@ -51,8 +51,8 @@ describe 'Group Routes' do
 
       last_response.status.must_equal 200
       body = JSON.parse(last_response.body)
+      body.must_include 'id'
       body.must_include 'name'
-      body.must_include 'group_id'
 
       Group.count.must_equal 1
       Posting.count.must_be :>=, 10
