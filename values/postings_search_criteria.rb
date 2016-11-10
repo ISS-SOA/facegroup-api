@@ -2,6 +2,8 @@
 
 # Input for SearchPostings
 class PostingsSearchCriteria
+  include WordMagic
+
   attr_accessor :group_id, :terms
 
   def initialize(params)

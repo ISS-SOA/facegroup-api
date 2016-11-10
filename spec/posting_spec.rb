@@ -37,7 +37,7 @@ describe 'Posting Routes' do
   describe 'Search postings by keywords' do
     10.times do
       it '(HAPPY) should find valid keyword postings' do
-        magic_word = random_message_word
+        magic_word = SpecSearch.random_message_word
         group_id = Group.first.id.to_s
         get "api/v0.1/group/#{group_id}/posting?search=#{magic_word[:word]}"
         last_response.status.must_equal 200
@@ -50,7 +50,7 @@ describe 'Posting Routes' do
 
     5.times do
       it '(HAPPY) should find valid keyword combination postings' do
-        magic_words = Array.new(3) { random_message_word }
+        magic_words = Array.new(3) { SpecSearch.random_message_word }
         keywords = magic_words.map { |magic| magic[:word] }.join('+')
         largest_count = magic_words.map { |magic| magic[:message_count] }.max
 

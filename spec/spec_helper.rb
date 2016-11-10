@@ -44,13 +44,23 @@ SAD_GROUP_ID = '00000'
 SAD_POSTING_ID = '13245_12324'
 REMOVED_FB_POSTING_ID = '13245_12324'
 
-include WordMagic
+# Helper class
+class SpecSearch
+  extend WordMagic
 
-def random_message_word
-  messages = Posting.all.map(&:message).join(' ')
-  words = messages.gsub(/[^a-zA-Z]/, ' ').downcase.split(' ').uniq
-  reasonable_words = reasonable_search_terms(words.join('+'))
-  word = reasonable_words.sample
-  message_count = Posting.all.select { |p| p.message =~ /#{word}/i }.count
-  { word: word, message_count: message_count }
+  def self.random_message_word
+    reasonable_words = SpecSearch.reasonable_search_terms(terms_from_postings)
+    word = reasonable_words.sample
+    message_count = Posting.all.select { |p| p.message =~ /#{word}/i }.count
+    { word: word, message_count: message_count }
+  end
+
+  private_class_method
+
+  def self.terms_from_postings
+    messages = Posting.all.map(&:message).join(' ')
+    messages.gsub(/[^a-zA-Z]/, ' ')
+            .downcase.split(' ')
+            .uniq.join('+')
+  end
 end

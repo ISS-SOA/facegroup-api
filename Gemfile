@@ -6,12 +6,15 @@ gem 'sinatra'
 gem 'puma'
 gem 'json'
 gem 'econfig'
+gem 'rake'
 
 gem 'facegroup'
 gem 'sequel'
 gem 'roar'
 gem 'multi_json'
 gem 'dry-monads'
+gem 'dry-container'
+gem 'dry-transaction'
 
 group :development, :test do
   gem 'sqlite3'
@@ -29,7 +32,6 @@ group :test do
   gem 'minitest-rg'
 
   gem 'rack-test'
-  gem 'rake'
 
   gem 'vcr'
   gem 'webmock'

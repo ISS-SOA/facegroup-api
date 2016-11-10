@@ -10,7 +10,7 @@ class FaceGroupAPI < Sinatra::Base
     if result.success?
       GroupRepresenter.new(result.value).to_json
     else
-      HttpErrorResponder.new(result.value).to_response
+      ErrorRepresenter.new(result.value).to_status_response
     end
   end
 
@@ -21,7 +21,7 @@ class FaceGroupAPI < Sinatra::Base
     if result.success?
       GroupRepresenter.new(result.value).to_json
     else
-      HttpErrorResponder.new(result.value).to_response
+      ErrorRepresenter.new(result.value).to_status_response
     end
   end
 end

@@ -1,30 +1,42 @@
 # frozen_string_literal: true
-require 'facegroup'
 
 # Loads data from Facebook group to database
 class UpdatePostingFromFB
   extend Dry::Monads::Either::Mixin
+  extend Dry::Container::Mixin
 
-  def self.call(params)
+  register :find_posting, lambda { |params|
     posting_id = params[:id]
     posting = Posting.find(id: posting_id)
     if posting
-      validate_and_update(posting)
+      Right(posting)
     else
       Left(Error.new(:bad_request, 'Posting is not stored'))
     end
-  end
+  }
 
-  private_class_method
-
-  def self.validate_and_update(posting)
+  register :validate_posting, lambda { |posting|
     updated_data = FaceGroup::Posting.find(id: posting.fb_id)
     if updated_data.nil?
       Left(Error.new(:not_found, 'Posting not found on Facebook anymore'))
     else
-      Right(update_posting(posting, updated_data))
+      Right(posting: posting, updated_data: updated_data)
     end
+  }
+
+  register :update_posting, lambda { |input|
+    Right(update_posting(input[:posting], input[:updated_data]))
+  }
+
+  def self.call(params)
+    Dry.Transaction(container: self) do
+      step :find_posting
+      step :validate_posting
+      step :update_posting
+    end.call(params)
   end
+
+  private_class_method
 
   def self.update_posting(posting, updated_data)
     posting.update(

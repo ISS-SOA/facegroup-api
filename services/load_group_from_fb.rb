@@ -1,51 +1,74 @@
 # frozen_string_literal: true
-require 'facegroup'
 
 # Loads data from Facebook group to database
 class LoadGroupFromFB
   extend Dry::Monads::Either::Mixin
+  extend Dry::Container::Mixin
 
   FB_GROUP_REGEX = %r{\"fb:\/\/group\/(\d+)\"}
 
-  def self.call(url_request)
-    scrape_fb_group_id(url_request).bind do |fb_group_id|
-      if Group.find(fb_id: fb_group_id)
-        Left(Error.new(:cannot_process, 'Group already exists'))
-      else
-        fb_group = FaceGroup::Group.find(id: fb_group_id)
-        Right(create_group_postings(fb_group))
-      end
+  register :validate_request_json, lambda { |request_body|
+    begin
+      url_representation = UrlRequestRepresenter.new(UrlRequest.new)
+      Right(url_representation.from_json(request_body))
+    rescue
+      Left(Error.new(:bad_request, 'URL could not be resolved'))
     end
-  end
+  }
 
-  private_class_method
-
-  def self.scrape_fb_group_id(url_request)
-    group_html(url_request).bind do |fb_group_html|
-      group_id_match = fb_group_html.match(FB_GROUP_REGEX)
-      if group_id_match
-        Right(group_id_match[1])
-      else
-        Left(Error.new(:cannot_process, 'URL not recognized as Facebook group'))
-      end
+  register :validate_request_url, lambda { |body_params|
+    if (fb_group_url = body_params['url']).nil?
+      Left(:cannot_process, 'URL not supplied')
+    else
+      Right(fb_group_url)
     end
-  end
+  }
 
-  def self.group_html(url_request)
-    body_params = JSON.parse url_request
-    fb_group_url = body_params['url']
-    Right(HTTP.get(fb_group_url).body.to_s)
-  rescue
-    Left(Error.new(:bad_request, 'URL could not be resolved'))
-  end
+  register :retrieve_fb_group_html, lambda { |fb_group_url|
+    begin
+      fb_group_html = HTTP.get(fb_group_url).body.to_s
+      Right(fb_group_html)
+    rescue
+      Left(Error.new(:bad_request, 'URL could not be resolved'))
+    end
+  }
 
-  def self.create_group_postings(fb_group)
+  register :parse_fb_group_id, lambda { |fb_group_html|
+    if (group_id_match = fb_group_html.match(FB_GROUP_REGEX)).nil?
+      Left(Error.new(:cannot_process, 'URL not recognized as Facebook group'))
+    else
+      Right(group_id_match[1])
+    end
+  }
+
+  register :retrieve_group_and_postings_data, lambda { |fb_group_id|
+    if Group.find(fb_id: fb_group_id)
+      Left(Error.new(:cannot_process, 'Group already exists'))
+    else
+      Right(FaceGroup::Group.find(id: fb_group_id))
+    end
+  }
+
+  register :create_group_and_postings, lambda { |fb_group|
     group = Group.create(fb_id: fb_group.id, name: fb_group.name)
     fb_group.feed.postings.each do |fb_posting|
       write_group_posting(group, fb_posting)
     end
-    group
+    Right(group)
+  }
+
+  def self.call(params)
+    Dry.Transaction(container: self) do
+      step :validate_request_json
+      step :validate_request_url
+      step :retrieve_fb_group_html
+      step :parse_fb_group_id
+      step :retrieve_group_and_postings_data
+      step :create_group_and_postings
+    end.call(params)
   end
+
+  private_class_method
 
   def self.write_group_posting(group, fb_posting)
     group.add_posting(

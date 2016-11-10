@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Search query for postings in a group by optional keywords
-class SearchGroupPostings
+class GroupPostingsQuery
   def self.call(group, search_terms)
     search_terms&.any? ? search_postings(group, search_terms) : group.postings
   end
