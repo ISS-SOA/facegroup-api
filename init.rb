@@ -1,4 +1,5 @@
 # frozen_string_literal: true
-Dir.glob('./{config,lib,models,decorators,controllers}/init.rb').each do |file|
+folders = 'config,lib,values,models,decorators,services,controllers'
+Dir.glob("./{#{folders}}/init.rb").each do |file|
   require file
 end

@@ -11,6 +11,7 @@ gem 'facegroup'
 gem 'sequel'
 gem 'roar'
 gem 'multi_json'
+gem 'dry-monads'
 
 group :development, :test do
   gem 'sqlite3'

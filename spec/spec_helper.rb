@@ -38,6 +38,7 @@ end
 
 HAPPY_GROUP_URL = 'https://www.facebook.com/groups/ISS.SOAD'
 SAD_GROUP_URL = 'https://www.facebook.com/groups/whatisthisidonteven'
+BAD_GROUP_URL = 'htt://www.facebook'
 
 SAD_GROUP_ID = '00000'
 SAD_POSTING_ID = '13245_12324'

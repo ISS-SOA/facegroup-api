@@ -30,15 +30,14 @@ describe 'Group Routes' do
       group_data['name'].length.must_be :>, 0
     end
 
-    it '(SAD) should report if a group is not found' do
+    it '(SAD) should report error for invalid group id' do
       get "api/v0.1/group/#{SAD_GROUP_ID}"
 
       last_response.status.must_equal 404
-      last_response.body.must_include SAD_GROUP_ID
     end
   end
 
-  describe 'Loading and saving a new group by ID' do
+  describe 'Loading and saving a new group by its URL' do
     before do
       DB[:groups].delete
       DB[:postings].delete
@@ -62,9 +61,7 @@ describe 'Group Routes' do
       post 'api/v0.1/group',
            { url: SAD_GROUP_URL }.to_json,
            'CONTENT_TYPE' => 'application/json'
-
-      last_response.status.must_equal 400
-      last_response.body.must_include SAD_GROUP_URL
+      last_response.status.must_equal 422
     end
 
     it 'should report error if group already exists' do
@@ -73,8 +70,14 @@ describe 'Group Routes' do
              { url: HAPPY_GROUP_URL }.to_json,
              'CONTENT_TYPE' => 'application/json'
       end
-
       last_response.status.must_equal 422
+    end
+
+    it '(BAD) should report error for an invalid group URL' do
+      post 'api/v0.1/group',
+           { url: BAD_GROUP_URL }.to_json,
+           'CONTENT_TYPE' => 'application/json'
+      last_response.status.must_equal 400
     end
   end
 end

@@ -27,15 +27,14 @@ describe 'Posting Routes' do
       feed_data['postings'].count.must_be :>=, 10
     end
 
-    it '(SAD) should report error postings cannot be found' do
+    it '(SAD) should report error if postings cannot be found' do
       get "api/v0.1/group/#{SAD_GROUP_ID}/posting"
 
-      last_response.status.must_equal 400
-      last_response.body.must_include SAD_GROUP_ID
+      last_response.status.must_equal 404
     end
   end
 
-  describe 'Find postings by search terms' do
+  describe 'Search postings by keywords' do
     10.times do
       it '(HAPPY) should find valid keyword postings' do
         magic_word = random_message_word
@@ -92,7 +91,6 @@ describe 'Posting Routes' do
       put "api/v0.1/posting/#{SAD_POSTING_ID}"
 
       last_response.status.must_equal 400
-      last_response.body.must_include SAD_POSTING_ID
     end
 
     it '(BAD) should report error if stored posting removed from Facebook' do
@@ -102,7 +100,6 @@ describe 'Posting Routes' do
       put "api/v0.1/posting/#{original.id}"
 
       last_response.status.must_equal 404
-      last_response.body.must_include original.id.to_s
     end
   end
 end

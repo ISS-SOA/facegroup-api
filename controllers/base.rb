@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+configure :development do
+  def reload!
+    # Tux reloading: https://github.com/cldwalker/tux/issues/3
+    exec $PROGRAM_NAME, *ARGV
+  end
+end
+
 # configure based on environment
 class FaceGroupAPI < Sinatra::Base
   extend Econfig::Shortcut
@@ -13,7 +20,14 @@ class FaceGroupAPI < Sinatra::Base
                                    client_secret: config.FB_CLIENT_SECRET)
   end
 
+  after do
+    content_type 'application/json'
+  end
+
   get '/?' do
-    "GroupAPI latest version endpoints are at: /#{API_VER}/"
+    {
+      status: 'OK',
+      message: "GroupAPI latest version endpoints are at: /#{API_VER}/"
+    }.to_json
   end
 end
