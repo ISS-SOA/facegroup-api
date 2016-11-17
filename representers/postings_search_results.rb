@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require_relative 'posting'
 
 # Represents overall group information for JSON API output
 class PostingsSearchResultsRepresenter < Roar::Decorator
