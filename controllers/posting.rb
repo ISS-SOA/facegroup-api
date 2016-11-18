@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'dry-transaction'
 
 # Posting routes
 class FaceGroupAPI < Sinatra::Base
