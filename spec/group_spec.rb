@@ -10,6 +10,27 @@ describe 'Group Routes' do
     VCR.eject_cassette
   end
 
+  describe 'Get a list of all groups' do
+    before do
+      # TODO: find a better way to populate group!
+      DB[:groups].delete
+      DB[:postings].delete
+      post 'api/v0.1/group',
+           { url: HAPPY_GROUP_URL }.to_json,
+           'CONTENT_TYPE' => 'application/json'
+    end
+
+    it 'should return a list of groups' do
+      get 'api/v0.1/group'
+      last_response.status.must_equal 200
+      last_response.content_type.must_equal 'application/json'
+      groups_data = JSON.parse(last_response.body)
+
+      groups_data['groups'].count.must_be :>=, 1
+      groups_data['groups'].first['name'].length.must_be :>=, 1
+    end
+  end
+
   describe 'Find stored group by its id' do
     before do
       # TODO: find a better way to populate group!
