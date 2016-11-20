@@ -10,6 +10,10 @@ Rake::TestTask.new(:spec) do |t|
   t.warning = false
 end
 
+task :run do
+  sh 'rerun "rackup -p 9292"'
+end
+
 namespace :db do
   task :_setup do
     require 'sequel'
