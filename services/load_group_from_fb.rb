@@ -5,7 +5,7 @@ class LoadGroupFromFB
   extend Dry::Monads::Either::Mixin
   extend Dry::Container::Mixin
 
-  FB_GROUP_REGEX = %r{\"fb:\/\/group\/(\d+)\"}
+  FB_GROUP_ID_REGEX = %r{\"fb:\/\/group\/(\d+)\"}
 
   register :validate_request_json, lambda { |request_body|
     begin
@@ -26,32 +26,37 @@ class LoadGroupFromFB
 
   register :retrieve_fb_group_html, lambda { |fb_group_url|
     begin
-      fb_group_html = HTTP.get(fb_group_url).body.to_s
-      Right(fb_group_html)
+      grp_info = { url: fb_group_url,
+                   html: HTTP.get(fb_group_url).body.to_s }
+      Right(grp_info)
     rescue
       Left(Error.new(:bad_request, 'URL could not be resolved'))
     end
   }
 
-  register :parse_fb_group_id, lambda { |fb_group_html|
-    if (group_id_match = fb_group_html.match(FB_GROUP_REGEX)).nil?
+  register :parse_fb_group_id, lambda { |grp_info|
+    grp_info[:fb_id] = grp_info[:html].match(FB_GROUP_ID_REGEX)&.[](1)
+    if grp_info[:fb_id].nil?
       Left(Error.new(:cannot_process, 'URL not recognized as Facebook group'))
     else
-      Right(group_id_match[1])
+      Right(grp_info)
     end
   }
 
-  register :retrieve_group_and_postings_data, lambda { |fb_group_id|
-    if Group.find(fb_id: fb_group_id)
+  register :retrieve_group_and_postings_data, lambda { |grp_info|
+    if Group.find(fb_id: grp_info[:fb_id])
       Left(Error.new(:cannot_process, 'Group already exists'))
     else
-      Right(FaceGroup::Group.find(id: fb_group_id))
+      grp_info[:api_data] = FaceGroup::Group.find(id: grp_info[:fb_id])
+      Right(grp_info)
     end
   }
 
-  register :create_group_and_postings, lambda { |fb_group|
-    group = Group.create(fb_id: fb_group.id, name: fb_group.name)
-    fb_group.feed.postings.each do |fb_posting|
+  register :create_group_and_postings, lambda { |grp_info|
+    group = Group.create(fb_id: grp_info[:api_data].id,
+                         name: grp_info[:api_data].name,
+                         fb_url: grp_info[:url])
+    grp_info[:api_data].feed.postings.each do |fb_posting|
       write_group_posting(group, fb_posting)
     end
     Right(group)
@@ -79,7 +84,8 @@ class LoadGroupFromFB
       name:                     fb_posting.name,
       attachment_title:         fb_posting.attachment&.title,
       attachment_description:   fb_posting.attachment&.description,
-      attachment_url:           fb_posting.attachment&.url
+      attachment_url:           fb_posting.attachment&.url,
+      attachment_media_url:     fb_posting.attachment&.media_url
     )
   end
 end

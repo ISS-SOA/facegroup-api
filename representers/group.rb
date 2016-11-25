@@ -6,4 +6,5 @@ class GroupRepresenter < Roar::Decorator
 
   property :id
   property :name
+  property :fb_url
 end

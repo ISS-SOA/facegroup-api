@@ -12,4 +12,5 @@ class PostingRepresenter < Roar::Decorator
   property :attachment_url
   property :attachment_title
   property :attachment_description
+  property :attachment_media_url
 end

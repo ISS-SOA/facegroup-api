@@ -20,6 +20,7 @@ Sequel.migration do
       String :attachment_url, :size=>255
       String :attachment_title, :size=>255
       String :attachment_description, :size=>255
+      String :attachment_media_url, :size=>255
     end
     
     create_table(:schema_info) do

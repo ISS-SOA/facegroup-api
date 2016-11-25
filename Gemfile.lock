@@ -1,7 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.4.0)
+    addressable (2.5.0)
+      public_suffix (~> 2.0, >= 2.0.2)
     bond (0.5.1)
     concurrent-ruby (1.0.2)
     crack (0.4.3)
@@ -15,7 +16,7 @@ GEM
       dry-configurable (~> 0.1, >= 0.1.3)
     dry-equalizer (0.2.0)
     dry-matcher (0.5.0)
-    dry-monads (0.2.0)
+    dry-monads (0.2.1)
       dry-equalizer
     dry-transaction (0.8.0)
       dry-container (>= 0.2.8)
@@ -24,7 +25,7 @@ GEM
       wisper (>= 1.6.0)
     econfig (2.0.0)
     erubis (2.7.0)
-    facegroup (0.3.0)
+    facegroup (0.4.0)
       http (~> 2.0)
     ffi (1.9.14)
     flay (2.8.1)
@@ -36,9 +37,9 @@ GEM
       path_expander (~> 1.0)
       ruby_parser (~> 3.1, > 3.1.0)
       sexp_processor (~> 4.4)
-    hashdiff (0.3.0)
+    hashdiff (0.3.1)
     hirb (0.7.3)
-    http (2.0.3)
+    http (2.1.0)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
       http-form_data (~> 1.0.1)
@@ -58,8 +59,9 @@ GEM
     multi_json (1.12.1)
     path_expander (1.0.0)
     pg (0.19.0)
-    puma (3.6.0)
-    rack (1.6.4)
+    public_suffix (2.0.4)
+    puma (3.6.2)
+    rack (1.6.5)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
