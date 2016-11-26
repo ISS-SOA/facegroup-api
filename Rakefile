@@ -16,7 +16,7 @@ namespace :run do
   end
 
   task :test do
-    loop {
+    loop do
       puts 'Setting up test environment'
       ENV['RACK_ENV'] = 'test'
       Rake::Task['db:_setup'].execute
@@ -25,7 +25,7 @@ namespace :run do
       url_request = { url: 'https://www.facebook.com/groups/ISS.SOAD' }
       LoadGroupFromFB.call(url_request.to_json)
       sh 'rerun "rackup -p 3000"'
-    }
+    end
   end
 end
 
