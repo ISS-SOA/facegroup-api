@@ -8,7 +8,7 @@ gem 'json'
 gem 'econfig'
 gem 'rake'
 
-gem 'facegroup'
+gem 'facegroup', '~> 0.6.1'
 gem 'sequel'
 gem 'roar'
 gem 'multi_json'

@@ -101,4 +101,24 @@ describe 'Group Routes' do
       last_response.status.must_equal 400
     end
   end
+
+  describe 'Finding Updated Postings on Facebook' do
+    before do
+      # TODO: find a better way to populate group!
+      DB[:groups].delete
+      DB[:postings].delete
+      post 'api/v0.1/group',
+           { url: HAPPY_GROUP_URL }.to_json,
+           'CONTENT_TYPE' => 'application/json'
+    end
+
+    it '(HAPPY) should find new updates when there are some' do
+      Group.first.postings.reverse.first(5).each(&:delete)
+      get "api/v0.1/group/#{Group.first.id}/news"
+      last_response.status.must_equal 200
+      news = JSON.parse(last_response.body)
+      news['group_id'].must_equal Group.first.id
+      news['postings'].count.must_be :>=, 5
+    end
+  end
 end

@@ -13,8 +13,8 @@ Sequel.migration do
       primary_key :id
       Integer :group_id
       String :fb_id, :size=>255
-      String :created_time, :size=>255
-      String :updated_time, :size=>255
+      DateTime :created_time
+      DateTime :updated_time
       String :message, :size=>255
       String :name, :size=>255
       String :attachment_url, :size=>255

@@ -20,6 +20,16 @@ class FaceGroupAPI < Sinatra::Base
     end
   end
 
+  get "/#{API_VER}/group/:id/news" do
+    result = FindFbGroupUpdates.call(params)
+
+    if result.success?
+      PostingsSearchResultsRepresenter.new(result.value).to_json
+    else
+      ErrorRepresenter.new(result.value).to_status_response
+    end
+  end
+
   # Body args (JSON) e.g.: {"url": "http://facebook.com/groups/group_name"}
   post "/#{API_VER}/group/?" do
     result = LoadGroupFromFB.call(request.body.read)
