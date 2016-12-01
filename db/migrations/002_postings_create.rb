@@ -8,8 +8,8 @@ Sequel.migration do
       foreign_key :group_id
 
       String :fb_id
-      String :created_time
-      String :updated_time
+      Time :created_time
+      Time :updated_time
       String :message
       String :name
       String :attachment_url
