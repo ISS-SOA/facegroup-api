@@ -15,9 +15,7 @@ describe 'Group Routes' do
       # TODO: find a better way to populate group!
       DB[:groups].delete
       DB[:postings].delete
-      post 'api/v0.1/group',
-           { url: HAPPY_GROUP_URL }.to_json,
-           'CONTENT_TYPE' => 'application/json'
+      LoadGroupFromFB.call({url: HAPPY_GROUP_URL}.to_json)
     end
 
     it 'should return a list of groups' do
@@ -36,9 +34,7 @@ describe 'Group Routes' do
       # TODO: find a better way to populate group!
       DB[:groups].delete
       DB[:postings].delete
-      post 'api/v0.1/group',
-           { url: HAPPY_GROUP_URL }.to_json,
-           'CONTENT_TYPE' => 'application/json'
+      LoadGroupFromFB.call({url: HAPPY_GROUP_URL}.to_json)
     end
 
     it '(HAPPY) should find a group given a correct id' do
@@ -107,13 +103,11 @@ describe 'Group Routes' do
       # TODO: find a better way to populate group!
       DB[:groups].delete
       DB[:postings].delete
-      post 'api/v0.1/group',
-           { url: HAPPY_GROUP_URL }.to_json,
-           'CONTENT_TYPE' => 'application/json'
+      LoadGroupFromFB.call({url: HAPPY_GROUP_URL}.to_json)
     end
 
     it '(HAPPY) should find new updates when there are some' do
-      Group.first.postings.reverse.first(5).each(&:delete)
+      Group.first.postings.first(5).each(&:destroy)
       get "api/v0.1/group/#{Group.first.id}/news"
       last_response.status.must_equal 200
       news = JSON.parse(last_response.body)

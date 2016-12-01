@@ -10,7 +10,7 @@ configure :test do
   ENV['DATABASE_URL'] = 'sqlite://db/test.db'
 end
 
-configure :development, :production do
+configure :development, :test, :production do
   require 'hirb'
   Hirb.enable
 end

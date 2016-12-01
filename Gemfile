@@ -37,7 +37,7 @@ group :test do
   gem 'webmock'
 end
 
-group :development, :production do
+group :development, :test, :production do
   gem 'tux'
   gem 'hirb'
 end
