@@ -30,7 +30,7 @@ class FindFbGroupUpdates
         compare_data[:latest_postings],
         GroupLatestPostingTimeQuery.call(compare_data[:group].id)
       )
-      Right(group_id: compare_data[:group].id, fb_postings: news)
+      Right(group: compare_data[:group], fb_postings: news)
     rescue
       Left(Error.new(:not_found, 'We had an error comparing data to Facebook'))
     end
@@ -38,11 +38,15 @@ class FindFbGroupUpdates
 
   register :create_postings_results, lambda { |news|
     begin
-      postings = news[:fb_postings].map do |p|
+      group = news[:group]
+      fb_postings = news[:fb_postings]
+      new_postings = fb_postings.map do |p|
         Posting.new(fb_id: p['id'],
                     message: p['message'], updated_time: p['updated_time'])
       end
-      results = PostingsSearchResults.new(news[:group_id], postings)
+      results = PostingsSearchResults.new(
+        group.id, group.name, group.fb_url, new_postings
+      )
       Right(results)
     rescue
       Left(Error.new(:not_found, 'Could not parse Facebook posting data'))

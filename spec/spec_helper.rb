@@ -44,6 +44,11 @@ SAD_GROUP_ID = '00000'
 SAD_POSTING_ID = '13245_12324'
 REMOVED_FB_POSTING_ID = '13245_12324'
 
+def delete_db_data
+  DB[:groups].delete
+  DB[:postings].delete
+end
+
 # Helper class
 class SpecSearch
   extend WordMagic

@@ -18,7 +18,8 @@ class SearchPostings
   register :search_postings, lambda { |input|
     postings = GroupPostingsQuery.call(input[:group], input[:search].terms)
     results = PostingsSearchResults.new(
-      input[:search].group_id, postings, input[:search].terms
+      input[:search].group_id, input[:group].name,
+      input[:group].fb_url, postings, input[:search].terms
     )
     Right(results)
   }

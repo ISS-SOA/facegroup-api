@@ -12,9 +12,7 @@ describe 'Group Routes' do
 
   describe 'Get a list of all groups' do
     before do
-      # TODO: find a better way to populate group!
-      DB[:groups].delete
-      DB[:postings].delete
+      delete_db_data
       LoadGroupFromFB.call({url: HAPPY_GROUP_URL}.to_json)
     end
 
@@ -31,9 +29,7 @@ describe 'Group Routes' do
 
   describe 'Find stored group by its id' do
     before do
-      # TODO: find a better way to populate group!
-      DB[:groups].delete
-      DB[:postings].delete
+      delete_db_data
       LoadGroupFromFB.call({url: HAPPY_GROUP_URL}.to_json)
     end
 
@@ -56,8 +52,7 @@ describe 'Group Routes' do
 
   describe 'Loading and saving a new group by its URL' do
     before do
-      DB[:groups].delete
-      DB[:postings].delete
+      delete_db_data
     end
 
     it '(HAPPY) should load and save a new group by its Facebook URL' do
@@ -95,24 +90,6 @@ describe 'Group Routes' do
            { url: BAD_GROUP_URL }.to_json,
            'CONTENT_TYPE' => 'application/json'
       last_response.status.must_equal 400
-    end
-  end
-
-  describe 'Finding Updated Postings on Facebook' do
-    before do
-      # TODO: find a better way to populate group!
-      DB[:groups].delete
-      DB[:postings].delete
-      LoadGroupFromFB.call({url: HAPPY_GROUP_URL}.to_json)
-    end
-
-    it '(HAPPY) should find new updates when there are some' do
-      Group.first.postings.first(5).each(&:destroy)
-      get "api/v0.1/group/#{Group.first.id}/news"
-      last_response.status.must_equal 200
-      news = JSON.parse(last_response.body)
-      news['group_id'].must_equal Group.first.id
-      news['postings'].count.must_be :>=, 5
     end
   end
 end
