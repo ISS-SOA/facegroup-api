@@ -60,10 +60,11 @@ describe 'Group Routes' do
            { url: HAPPY_GROUP_URL }.to_json,
            'CONTENT_TYPE' => 'application/json'
 
-      last_response.status.must_equal 200
-      body = JSON.parse(last_response.body)
-      body.must_include 'id'
-      body.must_include 'name'
+      last_response.status.must_equal 202
+      # body = JSON.parse(last_response.body)
+      # body.must_include 'id'
+      # body.must_include 'name'
+      # sleep(1)
 
       Group.count.must_equal 1
       Posting.count.must_be :>=, 10
@@ -77,11 +78,11 @@ describe 'Group Routes' do
     end
 
     it 'should report error if group already exists' do
-      2.times do
-        post 'api/v0.1/group',
-             { url: HAPPY_GROUP_URL }.to_json,
-             'CONTENT_TYPE' => 'application/json'
-      end
+      LoadGroupFromFB.call({url: HAPPY_GROUP_URL}.to_json)
+      post 'api/v0.1/group',
+           { url: HAPPY_GROUP_URL }.to_json,
+           'CONTENT_TYPE' => 'application/json'
+
       last_response.status.must_equal 422
     end
 

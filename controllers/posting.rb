@@ -8,7 +8,7 @@ class FaceGroupAPI < Sinatra::Base
     if results.success?
       PostingsSearchResultsRepresenter.new(results.value).to_json
     else
-      ErrorRepresenter.new(results.value).to_status_response
+      HttpResultRepresenter.new(results.value).to_status_response
     end
   end
 
@@ -18,7 +18,7 @@ class FaceGroupAPI < Sinatra::Base
     if result.success?
       PostingRepresenter.new(result.value).to_json
     else
-      ErrorRepresenter.new(result.value).to_status_response
+      HttpResultRepresenter.new(result.value).to_status_response
     end
   end
 end

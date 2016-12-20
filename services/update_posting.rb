@@ -11,14 +11,14 @@ class UpdatePostingFromFB
     if posting
       Right(posting)
     else
-      Left(Error.new(:bad_request, 'Posting is not stored'))
+      Left(HttpResult.new(:bad_request, 'Posting is not stored'))
     end
   }
 
   register :validate_posting, lambda { |posting|
     updated_data = FaceGroup::Posting.find(id: posting.fb_id)
     if updated_data.nil?
-      Left(Error.new(:not_found, 'Posting not found on Facebook anymore'))
+      Left(HttpResult.new(:not_found, 'Posting not found on Facebook anymore'))
     else
       Right(posting: posting, updated_data: updated_data)
     end

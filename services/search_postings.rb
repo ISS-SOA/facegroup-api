@@ -11,7 +11,7 @@ class SearchPostings
     if group
       Right(group: group, search: search)
     else
-      Left(Error.new(:not_found, 'Group not found'))
+      Left(HttpResult.new(:not_found, 'Group not found'))
     end
   }
 

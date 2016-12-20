@@ -2,6 +2,7 @@
 require 'sinatra'
 require 'econfig'
 require 'facegroup'
+require 'shoryuken'
 
 require_relative 'base'
 

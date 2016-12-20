@@ -6,7 +6,7 @@ class FindGroups
 
   def self.call
     if (groups = Group.all).nil?
-      Left(Error.new(:not_found, 'No groups found'))
+      Left(HttpResult.new(:not_found, 'No groups found'))
     else
       Right(Groups.new(groups))
     end

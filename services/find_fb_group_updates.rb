@@ -10,7 +10,7 @@ class FindFbGroupUpdates
     if group
       Right(group)
     else
-      Left(Error.new(:not_found, 'Group not found'))
+      Left(HttpResult.new(:not_found, 'Group not found'))
     end
   }
 
@@ -20,7 +20,7 @@ class FindFbGroupUpdates
       Right(group: group, latest_postings: latest_postings)
     rescue => e
       puts e
-      Left(Error.new(:not_found, 'Cannot check news from Facebook group'))
+      Left(HttpResult.new(:not_found, 'Cannot check news from Facebook group'))
     end
   }
 
@@ -32,7 +32,7 @@ class FindFbGroupUpdates
       )
       Right(group: compare_data[:group], fb_postings: news)
     rescue
-      Left(Error.new(:not_found, 'We had an error comparing data to Facebook'))
+      Left(HttpResult.new(:not_found, 'We had an error comparing data to Facebook'))
     end
   }
 
@@ -49,7 +49,7 @@ class FindFbGroupUpdates
       )
       Right(results)
     rescue
-      Left(Error.new(:not_found, 'Could not parse Facebook posting data'))
+      Left(HttpResult.new(:not_found, 'Could not parse Facebook posting data'))
     end
   }
 

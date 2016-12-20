@@ -20497,4 +20497,244 @@ http_interactions:
       string: '{"access_token":"<ACCESS_TOKEN>","token_type":"bearer"}'
     http_version: 
   recorded_at: Sat, 03 Dec 2016 06:37:41 GMT
+- request:
+    method: post
+    uri: https://sqs.ap-northeast-1.amazonaws.com/
+    body:
+      encoding: UTF-8
+      string: Action=GetQueueUrl&QueueName=facegroup-group&Version=2012-11-05
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.6.38 ruby/2.3.1 x86_64-darwin15
+      X-Amz-Date:
+      - 20161217T134923Z
+      Host:
+      - sqs.ap-northeast-1.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 9ef0c99cc86bc3e34bc664e7157be3a7b55741bf2920a82d3855c032d7c4d908
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIAIGC573GPDNL7PR3Q/20161217/ap-northeast-1/sqs/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=598f107cb5ca51c19b06943f0c32938168c3e8b66cb3421953013fb4acd6f4c8
+      Content-Length:
+      - '63'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Server
+      Date:
+      - Sat, 17 Dec 2016 13:49:23 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '340'
+      Connection:
+      - keep-alive
+      X-Amzn-Requestid:
+      - 17c38404-f461-5ecb-afd0-d4cbb0c29c8e
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0"?><GetQueueUrlResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><GetQueueUrlResult><QueueUrl>https://sqs.ap-northeast-1.amazonaws.com/503315808870/facegroup-group</QueueUrl></GetQueueUrlResult><ResponseMetadata><RequestId>17c38404-f461-5ecb-afd0-d4cbb0c29c8e</RequestId></ResponseMetadata></GetQueueUrlResponse>
+    http_version: 
+  recorded_at: Sat, 17 Dec 2016 13:49:23 GMT
+- request:
+    method: post
+    uri: https://sqs.ap-northeast-1.amazonaws.com/503315808870/facegroup-group
+    body:
+      encoding: UTF-8
+      string: Action=GetQueueAttributes&AttributeName.1=All&QueueUrl=https%3A%2F%2Fsqs.ap-northeast-1.amazonaws.com%2F503315808870%2Ffacegroup-group&Version=2012-11-05
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.6.38 ruby/2.3.1 x86_64-darwin15
+      X-Amz-Date:
+      - 20161217T134923Z
+      Host:
+      - sqs.ap-northeast-1.amazonaws.com
+      X-Amz-Content-Sha256:
+      - d68e2ca6aa288ad7b66966cf987b9bc653043ca74505d98e597d3bb2bcaa4938
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIAIGC573GPDNL7PR3Q/20161217/ap-northeast-1/sqs/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=3640eebaf4916401d0b1035ba91a532b2eebd94737480b17f2eae974b506164b
+      Content-Length:
+      - '153'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Server
+      Date:
+      - Sat, 17 Dec 2016 13:49:23 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1174'
+      Connection:
+      - keep-alive
+      X-Amzn-Requestid:
+      - 9f727f71-21c5-5d4d-82ce-2fbe6566344d
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0"?><GetQueueAttributesResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><GetQueueAttributesResult><Attribute><Name>QueueArn</Name><Value>arn:aws:sqs:ap-northeast-1:503315808870:facegroup-group</Value></Attribute><Attribute><Name>ApproximateNumberOfMessages</Name><Value>0</Value></Attribute><Attribute><Name>ApproximateNumberOfMessagesNotVisible</Name><Value>0</Value></Attribute><Attribute><Name>ApproximateNumberOfMessagesDelayed</Name><Value>0</Value></Attribute><Attribute><Name>CreatedTimestamp</Name><Value>1481943681</Value></Attribute><Attribute><Name>LastModifiedTimestamp</Name><Value>1481943681</Value></Attribute><Attribute><Name>VisibilityTimeout</Name><Value>30</Value></Attribute><Attribute><Name>MaximumMessageSize</Name><Value>262144</Value></Attribute><Attribute><Name>MessageRetentionPeriod</Name><Value>345600</Value></Attribute><Attribute><Name>DelaySeconds</Name><Value>0</Value></Attribute><Attribute><Name>ReceiveMessageWaitTimeSeconds</Name><Value>0</Value></Attribute></GetQueueAttributesResult><ResponseMetadata><RequestId>9f727f71-21c5-5d4d-82ce-2fbe6566344d</RequestId></ResponseMetadata></GetQueueAttributesResponse>
+    http_version: 
+  recorded_at: Sat, 17 Dec 2016 13:49:23 GMT
+- request:
+    method: post
+    uri: https://sqs.ap-northeast-1.amazonaws.com/503315808870/facegroup-group
+    body:
+      encoding: UTF-8
+      string: Action=SendMessage&MessageAttribute.1.Name=shoryuken_class&MessageAttribute.1.Value.DataType=String&MessageAttribute.1.Value.StringValue=CreateNewGroupWorker&MessageBody=150352985174571&QueueUrl=https%3A%2F%2Fsqs.ap-northeast-1.amazonaws.com%2F503315808870%2Ffacegroup-group&Version=2012-11-05
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.6.38 ruby/2.3.1 x86_64-darwin15
+      X-Amz-Date:
+      - 20161217T134923Z
+      Host:
+      - sqs.ap-northeast-1.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 4f4f5d11d479bf04c72451636e199a6203fbc90c4fcb0ca6589cb633dd8b4fba
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIAIGC573GPDNL7PR3Q/20161217/ap-northeast-1/sqs/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=58d0c703f7c3b25c84efdf96066345580e80ac894314b59fe51a7440cded3150
+      Content-Length:
+      - '293'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Server
+      Date:
+      - Sat, 17 Dec 2016 13:49:24 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '459'
+      Connection:
+      - keep-alive
+      X-Amzn-Requestid:
+      - 0177a589-b3b7-50ae-93bb-f546f713662d
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0"?><SendMessageResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><SendMessageResult><MessageId>d8899251-2e76-44bb-bdb3-7f5b5d0909e8</MessageId><MD5OfMessageBody>5097f227e979d1caa9e0189f494fbbe4</MD5OfMessageBody><MD5OfMessageAttributes>00b202766b1b92a5a0af560626a38305</MD5OfMessageAttributes></SendMessageResult><ResponseMetadata><RequestId>0177a589-b3b7-50ae-93bb-f546f713662d</RequestId></ResponseMetadata></SendMessageResponse>
+    http_version: 
+  recorded_at: Sat, 17 Dec 2016 13:49:24 GMT
+- request:
+    method: post
+    uri: https://sqs.ap-northeast-1.amazonaws.com/503315808870/facegroup-group
+    body:
+      encoding: UTF-8
+      string: Action=GetQueueAttributes&AttributeName.1=All&QueueUrl=https%3A%2F%2Fsqs.ap-northeast-1.amazonaws.com%2F503315808870%2Ffacegroup-group&Version=2012-11-05
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.6.38 ruby/2.3.1 x86_64-darwin15
+      X-Amz-Date:
+      - 20161217T134924Z
+      Host:
+      - sqs.ap-northeast-1.amazonaws.com
+      X-Amz-Content-Sha256:
+      - d68e2ca6aa288ad7b66966cf987b9bc653043ca74505d98e597d3bb2bcaa4938
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIAIGC573GPDNL7PR3Q/20161217/ap-northeast-1/sqs/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=23d99b2639a4d9c87e70f1a9142149cfc196d15ceb2d40a11505133784a96b44
+      Content-Length:
+      - '153'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Server
+      Date:
+      - Sat, 17 Dec 2016 13:49:24 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '1174'
+      Connection:
+      - keep-alive
+      X-Amzn-Requestid:
+      - f4c0dcc7-c3c9-50a9-abe0-8c08876da1e9
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0"?><GetQueueAttributesResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><GetQueueAttributesResult><Attribute><Name>QueueArn</Name><Value>arn:aws:sqs:ap-northeast-1:503315808870:facegroup-group</Value></Attribute><Attribute><Name>ApproximateNumberOfMessages</Name><Value>1</Value></Attribute><Attribute><Name>ApproximateNumberOfMessagesNotVisible</Name><Value>0</Value></Attribute><Attribute><Name>ApproximateNumberOfMessagesDelayed</Name><Value>0</Value></Attribute><Attribute><Name>CreatedTimestamp</Name><Value>1481943681</Value></Attribute><Attribute><Name>LastModifiedTimestamp</Name><Value>1481943681</Value></Attribute><Attribute><Name>VisibilityTimeout</Name><Value>30</Value></Attribute><Attribute><Name>MaximumMessageSize</Name><Value>262144</Value></Attribute><Attribute><Name>MessageRetentionPeriod</Name><Value>345600</Value></Attribute><Attribute><Name>DelaySeconds</Name><Value>0</Value></Attribute><Attribute><Name>ReceiveMessageWaitTimeSeconds</Name><Value>0</Value></Attribute></GetQueueAttributesResult><ResponseMetadata><RequestId>f4c0dcc7-c3c9-50a9-abe0-8c08876da1e9</RequestId></ResponseMetadata></GetQueueAttributesResponse>
+    http_version: 
+  recorded_at: Sat, 17 Dec 2016 13:49:24 GMT
+- request:
+    method: post
+    uri: https://sqs.ap-northeast-1.amazonaws.com/503315808870/facegroup-group
+    body:
+      encoding: UTF-8
+      string: Action=SendMessage&MessageAttribute.1.Name=shoryuken_class&MessageAttribute.1.Value.DataType=String&MessageAttribute.1.Value.StringValue=CreateNewGroupWorker&MessageBody=150352985174571&QueueUrl=https%3A%2F%2Fsqs.ap-northeast-1.amazonaws.com%2F503315808870%2Ffacegroup-group&Version=2012-11-05
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded; charset=utf-8
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.6.38 ruby/2.3.1 x86_64-darwin15
+      X-Amz-Date:
+      - 20161217T134924Z
+      Host:
+      - sqs.ap-northeast-1.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 4f4f5d11d479bf04c72451636e199a6203fbc90c4fcb0ca6589cb633dd8b4fba
+      Authorization:
+      - AWS4-HMAC-SHA256 Credential=AKIAIGC573GPDNL7PR3Q/20161217/ap-northeast-1/sqs/aws4_request,
+        SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=6fbac36b55bcab43ad7f54adb380dfbb33fa651245ce6b9fa99f99aaf0f48af6
+      Content-Length:
+      - '293'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Server
+      Date:
+      - Sat, 17 Dec 2016 13:49:24 GMT
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '459'
+      Connection:
+      - keep-alive
+      X-Amzn-Requestid:
+      - 03178c4b-32e6-5a79-a1db-dc8476421747
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0"?><SendMessageResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><SendMessageResult><MessageId>3a4a9507-0ae7-477c-a79e-8f7509140898</MessageId><MD5OfMessageBody>5097f227e979d1caa9e0189f494fbbe4</MD5OfMessageBody><MD5OfMessageAttributes>00b202766b1b92a5a0af560626a38305</MD5OfMessageAttributes></SendMessageResult><ResponseMetadata><RequestId>03178c4b-32e6-5a79-a1db-dc8476421747</RequestId></ResponseMetadata></SendMessageResponse>
+    http_version: 
+  recorded_at: Sat, 17 Dec 2016 13:49:24 GMT
 recorded_with: VCR 3.0.3

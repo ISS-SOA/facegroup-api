@@ -6,7 +6,7 @@ class FindGroup
 
   def self.call(params)
     if (group = Group.find(id: params[:id])).nil?
-      Left(Error.new(:not_found, 'FB Group not found'))
+      Left(HttpResult.new(:not_found, 'FB Group not found'))
     else
       Right(group)
     end
