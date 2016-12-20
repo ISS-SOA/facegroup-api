@@ -61,13 +61,15 @@ describe 'Group Routes' do
            'CONTENT_TYPE' => 'application/json'
 
       last_response.status.must_equal 202
+
+      ## Do NOT test actual DB insertion: use separate test for worker
       # body = JSON.parse(last_response.body)
       # body.must_include 'id'
       # body.must_include 'name'
       # sleep(1)
 
-      Group.count.must_equal 1
-      Posting.count.must_be :>=, 10
+      # Group.count.must_equal 1
+      # Posting.count.must_be :>=, 10
     end
 
     it '(BAD) should report error if given invalid URL' do
