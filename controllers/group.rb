@@ -30,27 +30,19 @@ class FaceGroupAPI < Sinatra::Base
     end
   end
 
-  # Body args (JSON) e.g.: {"url": "http://facebook.com/groups/group_name"}
-  # post "/#{API_VER}/group/?" do
-  #   result = LoadGroupFromFB.call(request.body.read)
-  #
-  #   if result.success?
-  #     GroupRepresenter.new(result.value).to_json
-  #   else
-  #     HttpResultRepresenter.new(result.value).to_status_response
-  #   end
-  # end
-
   post "/#{API_VER}/group/?" do
     url_request = request.body.read
-    fb_id_result = ValidateNewGroup.call(url_request)
+    channel_id = (headers.to_s + url_request.to_s).hash
 
-    if fb_id_result.failure?
-      HttpResultRepresenter.new(fb_id_result.value).to_status_response
-    else
-      res = CreateNewGroupWorker.perform_async(fb_id_result.value)
-      puts "WORKER: #{res}"
-      status 202
+    begin
+      result = CreateNewGroupWorker.perform_async(
+        { url_request: url_request,
+          channel_id: channel_id }.to_json
+      )
+    rescue => e
+      puts "ERROR: e"
     end
+    puts "WORKER: #{result}"
+    [202, { channel_id: channel_id }.to_json]
   end
 end

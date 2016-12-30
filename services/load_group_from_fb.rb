@@ -7,7 +7,14 @@ class LoadGroupFromFB
 
   FB_GROUP_ID_REGEX = %r{\"fb:\/\/group\/(\d+)\"}
 
-  def self.call(params)
+  def self.call(params, api_url: nil, channel: nil)
+    sleep_until_client_starts
+    request_info = {
+      request_json: params,
+      api_url: api_url,
+      channel: channel
+    }
+
     Dry.Transaction(container: self) do
       step :validate_request_json
       step :validate_request_url
@@ -16,72 +23,89 @@ class LoadGroupFromFB
       step :check_conflicting_group
       step :save_group_and_postings_data
       step :add_postings
-    end.call(params)
+    end.call(request_info)
   end
 
-  register :validate_request_json, lambda { |request_body|
+  register :validate_request_json, lambda { |request_info|
     begin
       url_representation = UrlRequestRepresenter.new(UrlRequest.new)
-      Right(url_representation.from_json(request_body))
+      url_request = url_representation.from_json(request_info[:request_json])
+      request_info[:fb_group_url] = url_request['url']
+
+      publish(request_info, '10')
+      Right(request_info)
     rescue
+      publish(request_info, 'URL could not be resolved')
       Left(HttpResult.new(:bad_request, 'URL could not be resolved'))
     end
   }
 
-  register :validate_request_url, lambda { |body_params|
-    if (fb_group_url = body_params['url']).nil?
+  register :validate_request_url, lambda { |request_info|
+    if request_info[:fb_group_url].nil?
+      publish(request_info, 'URL not supplied')
       Left(:cannot_process, 'URL not supplied')
     else
-      Right(fb_group_url)
+      publish(request_info, '20')
+      Right(request_info)
     end
   }
 
-  register :retrieve_fb_group_html, lambda { |fb_group_url|
+  register :retrieve_fb_group_html, lambda { |request_info|
     begin
-      grp_info = { url: fb_group_url,
-                   html: HTTP.get(fb_group_url).body.to_s }
-      Right(grp_info)
+      request_info[:html] = HTTP.get(request_info[:fb_group_url]).body.to_s
+      publish(request_info, '30')
+      Right(request_info)
     rescue
-      Left(HttpResult.new(:bad_request, 'URL could not be resolved'))
+      publish(request_info, 'URL could not be found')
+      Left(HttpResult.new(:bad_request, 'URL could not be found'))
     end
   }
 
-  register :parse_fb_group_id, lambda { |grp_info|
-    grp_info[:fb_id] = grp_info[:html].match(FB_GROUP_ID_REGEX)&.[](1)
-    if grp_info[:fb_id].nil?
+  register :parse_fb_group_id, lambda { |request_info|
+    request_info[:fb_id] = request_info[:html].match(FB_GROUP_ID_REGEX)&.[](1)
+    if request_info[:fb_id].nil?
+      publish(request_info, 'URL not recognized as Facebook group')
       Left(HttpResult.new(:cannot_process, 'URL not recognized as Facebook group'))
     else
-      Right(grp_info)
+      publish(request_info, '40')
+      Right(request_info)
     end
   }
 
-  register :check_conflicting_group, lambda { |grp_info|
-    if Group.find(fb_id: grp_info[:fb_id])
+  register :check_conflicting_group, lambda { |request_info|
+    if Group.find(fb_id: request_info[:fb_id])
+      publish(request_info, 'Group already exists')
       Left(HttpResult.new(:cannot_process, 'Group already exists'))
     else
-      Right(grp_info)
+      publish(request_info, '50')
+      Right(request_info)
     end
   }
 
-  register :save_group_and_postings_data, lambda { |grp_info|
+  register :save_group_and_postings_data, lambda { |request_info|
     begin
-      grp_info[:api_data] = FaceGroup::Group.find(id: grp_info[:fb_id])
-      grp_info[:group] = Group.create(
-        fb_id: grp_info[:api_data].id,
-        name: grp_info[:api_data].name,
-        fb_url: grp_info[:url]
+      request_info[:api_data] = FaceGroup::Group.find(id: request_info[:fb_id])
+      request_info[:group] = Group.create(
+        fb_id: request_info[:api_data].id,
+        name: request_info[:api_data].name,
+        fb_url: request_info[:fb_group_url]
       )
-      Right(grp_info)
-    rescue
-      Left(HttpResult.new(:cannot_process, 'Facebook details could not be found'))
+
+      publish(request_info, '60')
+      Right(request_info)
+    rescue => e
+      publish(request_info, 'Facebook details error')
+      Left(HttpResult.new(:cannot_process, 'Facebook details error'))
     end
   }
 
-  register :add_postings, lambda { |grp_info|
-    grp_info[:api_data].feed.postings.each do |fb_posting|
-      add_group_postings(grp_info[:group], fb_posting)
+  register :add_postings, lambda { |request_info|
+    request_info[:api_data].feed.postings.each do |fb_posting|
+      add_group_postings(request_info[:group], fb_posting)
     end
-    Right(grp_info[:group])
+
+    publish(request_info, '100')
+    Right(HttpResult.new(:success, "Group created"))
   }
 
   private_class_method
@@ -98,5 +122,20 @@ class LoadGroupFromFB
       attachment_url:           fb_posting.attachment&.url,
       attachment_media_url:     fb_posting.attachment&.media_url
     )
+  end
+
+  def self.publish(request_info, message)
+    return unless request_info[:channel]
+    puts "#{request_info[:channel]}: #{message}"
+    HTTP.headers('Content-Type' => 'application/json')
+        .post("#{request_info[:api_url]}/faye",
+              json: {
+                channel: "/#{request_info[:channel]}",
+                data: message
+              })
+  end
+
+  def self.sleep_until_client_starts
+    sleep(0.5)
   end
 end

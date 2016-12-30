@@ -21,6 +21,7 @@ gem 'hirb'
 
 gem 'aws-sdk', '~> 2'
 gem 'shoryuken'
+gem 'faye', '= 1.1.2'
 
 group :development do
   gem 'rerun'

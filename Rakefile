@@ -109,4 +109,17 @@ namespace :queue do
       puts "Error creating queue: #{e}"
     end
   end
+
+  task :purge do
+    config = FaceGroupAPI.config
+    sqs = Aws::SQS::Client.new(region: config.AWS_REGION)
+
+    begin
+      url = sqs.get_queue_url({ queue_name: config.GROUP_QUEUE })
+      queue = sqs.purge_queue({ queue_url: url.queue_url})
+      puts "Queue #{config.GROUP_QUEUE} purged"
+    rescue => e
+      puts "Error purging queue: #{e}"
+    end
+  end
 end

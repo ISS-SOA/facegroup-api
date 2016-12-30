@@ -19,6 +19,10 @@ class CreateNewGroupWorker
   Econfig.env = ENV['RACK_ENV'] || 'development'
   Econfig.root = File.expand_path('..', File.dirname(__FILE__))
 
+  ENV['AWS_REGION'] = CreateNewGroupWorker.config.AWS_REGION
+  ENV['AWS_ACCESS_KEY_ID'] = CreateNewGroupWorker.config.AWS_ACCESS_KEY_ID
+  ENV['AWS_SECRET_ACCESS_KEY'] = CreateNewGroupWorker.config.AWS_SECRET_ACCESS_KEY
+
   Shoryuken.configure_client do |shoryuken_config|
     shoryuken_config.aws = {
       access_key_id:      CreateNewGroupWorker.config.AWS_ACCESS_KEY_ID,
@@ -35,10 +39,13 @@ class CreateNewGroupWorker
   include Shoryuken::Worker
   shoryuken_options queue: config.GROUP_QUEUE, auto_delete: true
 
-  def perform(_sqs_msg, fb_id)
-    puts "REQUEST: #{fb_id}"
-    result = CreateNewGroup.call(fb_id)
-    puts "RESULT: #{result.value}"
+  def perform(_sqs_msg, worker_request)
+    request = JSON.parse(worker_request)
+    result = LoadGroupFromFB.call(
+      request['url_request'],
+      api_url: CreateNewGroupWorker.config.API_URL,
+      channel: request['channel_id']
+    )
 
     HttpResultRepresenter.new(result.value).to_status_response
   end
